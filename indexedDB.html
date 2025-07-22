@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>User Data Fetcher 😊</title>
+</head>
+<body>
+    <h1>👍 User Data Fetcher ✌</h1>
+    <button id="loadUsers">Load Users</button>
+    <div id="loading">🧪 Loading users, please wait... 🧪</div>
+    <ul id="userList"></ul>
+    <script>
+        document.getElementById('loadUsers').addEventListener('click', loadUsers);
+    
+        async function ClearStuff() {
+            loading.style.display = 'none';
+            button.disabled = false;
+            button.textContent = 'Load Users';
+        }
+
+        async function loadUsers() {
+            if (!confirm("This will fetch your stuff in External Page? Are you sure?")) 
+            {
+                userList.innerHTML = `<p style="color: red;">Process Cancelled by User.</p>`;
+                ClearStuff();
+                return;
+            }
+            const button = document.getElementById('loadUsers');
+            const loading = document.getElementById('loading');
+            const userList = document.getElementById('userList');
+            
+            const ServerLinkAPI = "https://jsonplaceholder.typicode.com/users";
+    
+            userList.innerHTML = '';
+            loading.style.display = 'block';
+            button.disabled = true;
+            button.textContent = 'Loading...';
+    
+            try {
+    
+                await new Promise(resolve => setTimeout(resolve, 2500)); 
+                const response = await fetch(ServerLinkAPI);
+                if (!response.ok) {
+                    console.error('❌ HTTP error! status:', response.status);
+                    return;
+                }
+                const users = await response.json();
+                
+                //Using Foreach Code Here bruhh........
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = `${user.name} - ${user.email}`;
+                    
+                    if (user.company && user.company.name === 'Romaguera-Crona') {
+                        li.classList.add('highlight');
+                    }
+                    userList.appendChild(li);
+                });
+                
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                userList.innerHTML = `<li style="color: red;">Error loading users: ${error.message}</li>`;
+            }
+            ClearStuff();
+        }
+    </script>
+</body>
+</html>
